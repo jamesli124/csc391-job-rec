@@ -1,145 +1,156 @@
 import logo from './logo.svg';
 import './App.css';
 import React, { useState } from "react";
+import { Card, CardContent } from "./components/ui/card";
+import { Button } from "./components/ui/button";
+import { Input } from "./components/ui/input";
+import { Checkbox } from "./components/ui/checkbox";
 
-const roles = [
+
+const jobs = [
   {
-    name: "Entry-Level Python Engineer",
-    requiredSkills: ["Python course work", "Software Engineering course work"],
-    desiredSkills: ["Agile course"],
-    qualifications: ["Bachelor in CS"],
+    title: "Entry-Level Python Engineer",
+    required: { degrees: ["Bachelor in CS"], skills: [] },
+    desired: { skills: ["Agile course"] },
   },
   {
-    name: "Python Engineer",
-    requiredSkills: ["3 years Python development", "1 year data development", "Experience in Agile projects", "Used Git"],
-    desiredSkills: [],
-    qualifications: ["Bachelor in CS"],
+    title: "Python Engineer",
+    required: {
+      degrees: ["Bachelor in CS"],
+      experience: { Python: 3, "Data Development": 1 },
+      skills: ["Git", "Agile projects"],
+    },
+    desired: {},
   },
   {
-    name: "Project Manager",
-    requiredSkills: ["3 years managing software projects", "2 years in Agile projects"],
-    desiredSkills: [],
-    qualifications: ["PMI Lean Project Management Certification"],
+    title: "Project Manager",
+    required: {
+      experience: { "Managing Software Projects": 3, "Agile projects": 2 },
+    },
+    desired: { certifications: ["PMI Lean Project Management Certification"] },
   },
   {
-    name: "Senior Knowledge Engineer",
-    requiredSkills: ["3 years using Python to develop Expert Systems", "2 years data architecture and development"],
-    desiredSkills: [],
-    qualifications: ["Masters in CS"],
+    title: "Senior Knowledge Engineer",
+    required: {
+      degrees: ["Masters in CS"],
+      experience: { "Python Expert Systems": 3, "Data Architecture": 2 },
+    },
+    desired: {},
   },
 ];
 
-function App() {
-  const [education, setEducation] = useState("");
-  const [experience, setExperience] = useState("");
-  const [skills, setSkills] = useState([]);
-  const [result, setResult] = useState([]);
+export default function JobRecommendation() {
+  const [formData, setFormData] = useState({
+    degrees: [],
+    certifications: [],
+    skills: [],
+    experience: {},
+  });
+  const [recommendedJobs, setRecommendedJobs] = useState([]);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    if (name === "education") {
-      setEducation(value);
-    } else if (name === "experience") {
-      setExperience(value);
-    } else if (name === "skills") {
-      setSkills(value.split(","));
-    }
-  };
-
-  const handleSubmit = () => {
-    const matchingRoles = roles.filter((role) => {
-      // Check if the user meets the required qualifications and skills
-      const hasRequiredSkills = role.requiredSkills.every((skill) =>
-        skills.includes(skill)
-      );
-      const hasExperience = role.requiredSkills.every((exp) =>
-        experience.includes(exp)
-      );
-      const hasEducation = role.qualifications.includes(education);
-
-      return hasRequiredSkills && hasExperience && hasEducation;
+  const handleCheckboxChange = (category, value) => {
+    setFormData((prev) => {
+      const newArray = prev[category].includes(value)
+        ? prev[category].filter((item) => item !== value)
+        : [...prev[category], value];
+      return { ...prev, [category]: newArray };
     });
-
-    setResult(matchingRoles);
   };
+
+  const handleExperienceChange = (skill, years) => {
+    setFormData((prev) => ({
+      ...prev,
+      experience: { ...prev.experience, [skill]: parseInt(years) || 0 },
+    }));
+  };
+
+  const recommendJobs = () => {
+    const matches = jobs.filter((job) => {
+      const { required } = job;
+      return (
+        (!required.degrees ||
+          required.degrees.every((deg) => formData.degrees.includes(deg))) &&
+        (!required.experience ||
+          Object.entries(required.experience).every(
+            ([skill, years]) => formData.experience[skill] >= years
+          )) &&
+        (!required.skills ||
+          required.skills.every((skill) => formData.skills.includes(skill)))
+      );
+    });
+    setRecommendedJobs(matches);
+  };
+
   return (
-    <div>
-      <h1>Job Recommender</h1>
-      <div>
-        <label>
-          Education and Qualifications
-          <input type="checked" name="bscs" onInput={handleChange}>BS in Computer Science</input>
-        </label>
-      </div>
-      
-      <button onClick={handleSubmit}>Check Qualifications</button>
-      <div>
-        <h2>Recommended Roles:</h2>
-        <ul>
-          {result.length === 0 ? (
-            <li>No matching roles found</li>
-          ) : (
-            result.map((role) => <li key={role.name}>{role.name}</li>)
-          )}
-        </ul>
-      </div>
+    <div className="min-h-screen bg-gray-100 flex flex-col items-center p-6">
+      <header className="w-full bg-blue-600 text-white py-4 text-center text-2xl font-bold">
+        Job Recommendation System
+      </header>
+      <main className="bg-white p-6 rounded-lg shadow-md w-full max-w-2xl">
+        <h1 className="text-2xl font-bold mb-4">Job Recommendation Form</h1>
+        <div>
+          <h2 className="font-semibold">Degrees</h2>
+          {['Bachelor in CS', 'Masters in CS'].map((deg) => (
+            <div key={deg}>
+              <Checkbox
+                checked={formData.degrees.includes(deg)}
+                onCheckedChange={() => handleCheckboxChange("degrees", deg)}
+              /> {deg}
+            </div>
+          ))}
+        </div>
+        <div>
+          <h2 className="font-semibold">Certifications</h2>
+          {['PMI Lean Project Management Certification'].map((cert) => (
+            <div key={cert}>
+              <Checkbox
+                checked={formData.certifications.includes(cert)}
+                onCheckedChange={() => handleCheckboxChange("certifications", cert)}
+              /> {cert}
+            </div>
+          ))}
+        </div>
+        <div>
+          <h2 className="font-semibold">Skills</h2>
+          {['Agile course', 'Git', 'Agile projects'].map((skill) => (
+            <div key={skill}>
+              <Checkbox
+                checked={formData.skills.includes(skill)}
+                onCheckedChange={() => handleCheckboxChange("skills", skill)}
+              /> {skill}
+            </div>
+          ))}
+        </div>
+        <div>
+          <h2 className="font-semibold">Experience (Years)</h2>
+          {['Python', 'Data Development', 'Managing Software Projects', 'Agile projects', 'Python Expert Systems', 'Data Architecture'].map((exp) => (
+            <div key={exp}>
+              <label>{exp}: </label>
+              <Input
+                type="number"
+                value={formData.experience[exp] || ""}
+                onChange={(e) => handleExperienceChange(exp, e.target.value)}
+                className="w-16 ml-2"
+              />
+            </div>
+          ))}
+        </div>
+        <Button className="mt-4" onClick={recommendJobs}>Get Job Recommendations</Button>
+        {recommendedJobs.length > 0 && (
+          <div className="mt-4">
+            <h2 className="text-xl font-semibold">Recommended Jobs:</h2>
+            {recommendedJobs.map((job) => (
+              <Card key={job.title} className="mt-2 p-2">
+                <CardContent>{job.title}</CardContent>
+              </Card>
+            ))}
+          </div>
+        )}
+      </main>
+      <footer className="w-full bg-gray-800 text-white py-4 text-center mt-6">
+        &copy; 2025 Job Matcher Inc.
+      </footer>
     </div>
-  )
+  );
+}
 
-  /* return (
-    <div>
-      <h1>Role Qualification Checker</h1>
-
-      <div>
-        <label>
-          Education (e.g., Bachelor in CS):
-          <input
-            type="text"
-            name="education"
-            value={education}
-            onChange={handleChange}
-          />
-        </label>
-      </div>
-
-      <div>
-        <label>
-          Experience (comma-separated):
-          <input
-            type="text"
-            name="experience"
-            value={experience}
-            onChange={handleChange}
-          />
-        </label>
-      </div>
-
-      <div>
-        <label>
-          Skills (comma-separated):
-          <input
-            type="text"
-            name="skills"
-            value={skills}
-            onChange={handleChange}
-          />
-        </label>
-      </div>
-
-      <button onClick={handleSubmit}>Check Qualifications</button>
-
-      <div>
-        <h2>Recommended Roles:</h2>
-        <ul>
-          {result.length === 0 ? (
-            <li>No matching roles found</li>
-          ) : (
-            result.map((role) => <li key={role.name}>{role.name}</li>)
-          )}
-        </ul>
-      </div>
-    </div>
-  ); */
-};
-
-export default App;
