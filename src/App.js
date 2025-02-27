@@ -62,8 +62,31 @@ function App() {
 
     setResult(matchingRoles);
   };
-
   return (
+    <div>
+      <h1>Job Recommender</h1>
+      <div>
+        <label>
+          Education and Qualifications
+          <input type="checked" name="bscs" onInput={handleChange}>BS in Computer Science</input>
+        </label>
+      </div>
+      
+      <button onClick={handleSubmit}>Check Qualifications</button>
+      <div>
+        <h2>Recommended Roles:</h2>
+        <ul>
+          {result.length === 0 ? (
+            <li>No matching roles found</li>
+          ) : (
+            result.map((role) => <li key={role.name}>{role.name}</li>)
+          )}
+        </ul>
+      </div>
+    </div>
+  )
+
+  /* return (
     <div>
       <h1>Role Qualification Checker</h1>
 
@@ -116,7 +139,7 @@ function App() {
         </ul>
       </div>
     </div>
-  );
+  ); */
 };
 
 export default App;
