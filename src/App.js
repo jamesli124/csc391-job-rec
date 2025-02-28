@@ -10,15 +10,15 @@ import { Checkbox } from "./components/ui/checkbox";
 const jobs = [
   {
     title: "Entry-Level Python Engineer",
-    required: { degrees: ["Bachelor in CS"], skills: [] },
+    required: { degrees: ["Bachelor in CS"], skills: ["Python course work", "Software Engineering course work"] },
     desired: { skills: ["Agile course"] },
   },
   {
     title: "Python Engineer",
     required: {
       degrees: ["Bachelor in CS"],
-      experience: { Python: 3, "Data Development": 1 },
-      skills: ["Git", "Agile projects"],
+      experience: { Python: 3, "Data Development": 1},
+      skills: ["Git", "Agile project experience"],
     },
     desired: {},
   },
@@ -26,8 +26,10 @@ const jobs = [
     title: "Project Manager",
     required: {
       experience: { "Managing Software Projects": 3, "Agile projects": 2 },
+      certifications: ["PMI Lean Project Management Certification"],
+      skills: ["Agile project experience"],
     },
-    desired: { certifications: ["PMI Lean Project Management Certification"] },
+    desired: {},
   },
   {
     title: "Senior Knowledge Engineer",
@@ -112,7 +114,7 @@ export default function JobRecommendation() {
         </div>
         <div>
           <h2 className="font-semibold">Skills</h2>
-          {['Agile course', 'Git', 'Agile projects'].map((skill) => (
+          {['Agile course', 'Git', 'Agile project experience'].map((skill) => (
             <div key={skill}>
               <Checkbox
                 checked={formData.skills.includes(skill)}
