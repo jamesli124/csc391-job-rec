@@ -49,6 +49,7 @@ export default function JobRecommendation() {
     experience: {},
   });
   const [recommendedJobs, setRecommendedJobs] = useState([]);
+  const [skillFeedback, setSkillFeedback] = useState([]);
 
   const handleCheckboxChange = (category, value) => {
     setFormData((prev) => {
@@ -81,6 +82,15 @@ export default function JobRecommendation() {
       );
     });
     setRecommendedJobs(matches);
+
+    const feedback = matches.flatMap((job) =>
+      job.desired.skills?.map((skill) =>
+        formData.skills.includes(skill)
+          ? `${skill} is valued for the ${job.title} position.`
+          : `${skill} might be useful for the ${job.title} position in the future.`
+      ) || []
+    );
+    setSkillFeedback(feedback);
   };
 
   return (
@@ -150,11 +160,20 @@ export default function JobRecommendation() {
             ))}
           </div>
         )}
+        {skillFeedback.length > 0 && (
+          <div className="mt-4">
+            <h2 className="text-xl font-semibold">Skill Feedback:</h2>
+            {skillFeedback.map((feedback, index) => (
+              <p key={index}>{feedback}</p>
+            ))}
+          </div>
+        )}
       </main>
       <footer className="w-full bg-gray-800 text-white py-4 text-center mt-6">
         &copy; 2025 Job Matcher Inc.
       </footer>
     </div>
+
   );
 }
 
