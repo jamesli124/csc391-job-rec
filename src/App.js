@@ -20,7 +20,7 @@ const jobs = [
       experience: { Python: 3, "Data Development": 1},
       skills: ["Git", "Agile project experience"],
     },
-    desired: {},
+    desired: {skills: ["Git", "Agile project experience"]},
   },
   {
     title: "Project Manager",
