@@ -18,9 +18,9 @@ const jobs = [
     required: {
       degrees: ["Bachelor in CS"],
       experience: { Python: 3, "Data Development": 1},
-      skills: ["Git", "Agile project experience"],
+      skills: ["Agile project experience"],
     },
-    desired: {skills: ["Git", "Agile project experience"]},
+    desired: {skills: ["Git"]},
   },
   {
     title: "Project Manager",
