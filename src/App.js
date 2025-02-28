@@ -153,6 +153,7 @@ export default function JobRecommendation() {
         {recommendedJobs.length > 0 && (
           <div className="mt-4">
             <h2 className="text-xl font-semibold">Recommended Jobs:</h2>
+            <p>Roles appear below if you meet all requirements.</p>
             {recommendedJobs.map((job) => (
               <Card key={job.title} className="mt-2 p-2">
                 <CardContent>{job.title}</CardContent>
