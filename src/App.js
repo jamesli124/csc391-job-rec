@@ -114,7 +114,9 @@ export default function JobRecommendation() {
         </div>
         <div>
           <h2 className="font-semibold">Skills</h2>
-          {['Agile course', 'Git', 'Agile project experience'].map((skill) => (
+          {['Agile course', 'Git', 'Agile project experience',
+          'Python course work',
+          'Software Engineering course work'].map((skill) => (
             <div key={skill}>
               <Checkbox
                 checked={formData.skills.includes(skill)}
